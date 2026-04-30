@@ -79,7 +79,17 @@
       box-shadow: var(--shadow);
       padding: 18px;
     }
-    .sticky { position: sticky; top: 16px; }
+    .sticky {
+      position: sticky;
+      top: 12px;
+      max-height: calc(100vh - 24px);
+      overflow-y: auto;
+      padding-right: 12px;
+      scrollbar-gutter: stable;
+    }
+    .sticky::-webkit-scrollbar { width: 10px; }
+    .sticky::-webkit-scrollbar-thumb { background: #c9d8ef; border-radius: 999px; }
+    .sticky::-webkit-scrollbar-track { background: #eef4ff; border-radius: 999px; }
     .section { margin-top: 18px; }
     .stack > * + * { margin-top: 12px; }
 
@@ -112,7 +122,7 @@
 
     .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     .row.three { grid-template-columns: 1fr 1fr 1fr; }
-    .help { font-size: 12px; color: var(--muted); margin-top: 6px; }
+    .help { font-size: 13px; color: #45566e; margin-top: 6px; }
     .privacy {
       margin-top: 10px;
       background: rgba(104,222,200,.12);
@@ -215,7 +225,7 @@
 
     @media (max-width: 980px) {
       .grid { grid-template-columns: 1fr; }
-      .sticky { position: static; }
+      .sticky { position: static; max-height: none; overflow: visible; padding-right: 18px; }
       .kpis, .kpis.three, .kpis.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .profile-list, .baseline-list, .split { grid-template-columns: 1fr; }
     }
@@ -268,14 +278,22 @@
             <label for="mileGoal">Weekly mile goal</label>
             <input id="mileGoal" type="number" min="1" step="1" value="100" />
           </div>
-          <div>
-            <label for="outputGoal">Weekly output goal</label>
-            <input id="outputGoal" type="number" min="0" step="10" placeholder="Auto" />
-          </div>
-        </div>
-        <div class="help">Leave output blank to estimate from your recent output per mile and selected goal.</div>
 
-        <div class="field-box">
+          <div class="row">
+            <div>
+              <label for="mileGoal">Weekly mile goal</label>
+              <input id="mileGoal" type="number" min="1" step="1" value="100" />
+            </div>
+            <div>
+              <label for="outputGoal">Weekly output goal</label>
+              <input id="outputGoal" type="number" min="0" step="10" placeholder="Auto" />
+            </div>
+          </div>
+          <div class="help">Leave output blank to estimate from your recent output per mile and selected goal.</div>
+        </details>
+
+        <details open class="field-box">
+          <summary>FTP settings</summary>
           <h3>FTP, optional</h3>
           <div class="row">
             <div>
@@ -288,9 +306,10 @@
             </div>
           </div>
           <div class="help">FTP lets the app classify ride intensity using Avg. Watts / FTP and estimate training stress.</div>
-        </div>
+        </details>
 
-        <div class="field-box">
+        <details open class="field-box">
+          <summary>Availability and preferences</summary>
           <h3>Availability</h3>
           <label>Days available this week</label>
           <div id="daysAvailable" class="days-grid"></div>
@@ -322,7 +341,7 @@
               <option value="0">Sunday</option>
             </select>
           </div>
-        </div>
+        </details>
 
         <div class="row">
           <div>
@@ -370,6 +389,7 @@ let parsedRows = [];
 let lastModel = null;
 let lastPlanText = '';
 let lastPlanCsv = '';
+let hasBuiltPlan = false;
 
 const GOALS = {
   maintain: {
@@ -1583,6 +1603,7 @@ function initGoalCards() {
 }
 
 function handleBuild() {
+  hasBuiltPlan = true;
   saveSettings();
   updateGoalHelp();
   if (!parsedRows.length) {
@@ -1642,7 +1663,9 @@ function setupEvents() {
     parsedRows = parseCsv(text);
     $('uploadMeta').textContent = `Loaded: ${file.name} · ${parsedRows.length} workouts found`; 
     if (!$('outputGoal').value) $('outputGoal').dataset.auto = 'true';
-    handleBuild();
+    hasBuiltPlan = false;
+    $('results').className = 'empty';
+    $('results').innerHTML = '<h2>Set your training goal</h2><p>Choose a primary goal, enter your weekly targets, and click <strong>Build plan</strong> to generate recommendations that balance mileage, output, FTP, and recovery.</p>';
   });
 
   ['fitnessGoal','mileGoal','outputGoal','ftpWatts','targetFtpWatts','preferredRestDay','planMode','weekStart','maxRideMinutes','intensityBias'].forEach(id => {
@@ -1653,7 +1676,10 @@ function setupEvents() {
     });
   });
   $('outputGoal').addEventListener('input', () => { $('outputGoal').dataset.auto = $('outputGoal').value ? 'false' : 'true'; });
-  document.querySelectorAll('#daysAvailable input[type="checkbox"]').forEach(c => c.addEventListener('change', handleBuild));
+  document.querySelectorAll('#daysAvailable input[type="checkbox"]').forEach(c => c.addEventListener('change', () => {
+    saveSettings();
+    if (hasBuiltPlan) handleBuild();
+  }));
   $('buildBtn').addEventListener('click', handleBuild);
   $('copyBtn').addEventListener('click', async () => {
     if (!lastPlanText && parsedRows.length) handleBuild();
