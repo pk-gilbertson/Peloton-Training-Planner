@@ -3,10 +3,25 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Peloton Training Recommendation Engine</title>
+  <title>Pace &amp; Power: Training Engine</title>
   <style>
     :root {
-      --bg: #f7f3ec;
+      --midnight: #08111F;
+      --navy-surface: #111B2D;
+      --navy-elevated: #17233A;
+      --shirt-blue: #86A8F7;
+      --shirt-blue-dark: #5574E8;
+      --mint: #68DEC8;
+      --mint-dark: #2DBAA7;
+      --cloud: #F6F9FD;
+      --card: #FFFFFF;
+      --ice: #EAF1FF;
+      --mint-wash: #E8FBF7;
+      --text-dark: #F8FBFF;
+      --text-dark-muted: #B7C5D9;
+      --border-light: #DCE6F3;
+      --border-dark: #263856;
+      --info: #86A8F7;
       --panel: #ffffff;
       --ink: #1f2933;
       --muted: #5f6b76;
@@ -32,32 +47,34 @@
     html { scroll-behavior: smooth; }
     body {
       margin: 0;
-      background: var(--bg);
+      background: var(--cloud);
       color: var(--ink);
-      font-family: Arial, Helvetica, sans-serif;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       line-height: 1.45;
     }
 
     header {
       padding: 34px 22px 24px;
-      border-bottom: 1px solid var(--line);
+      border-bottom: 1px solid var(--border-dark);
       background:
-        radial-gradient(circle at top left, rgba(47,93,80,.15), transparent 30%),
-        linear-gradient(90deg, rgba(47,93,80,.12), rgba(165,74,42,.08));
+        radial-gradient(circle at 16% 10%, rgba(134,168,247,.30), transparent 34%),
+        radial-gradient(circle at 86% 8%, rgba(104,222,200,.24), transparent 30%),
+        linear-gradient(170deg, var(--midnight), #0D1830 58%, #101f3f);
     }
 
     .wrap { max-width: 1240px; margin: 0 auto; }
-    h1 { margin: 0 0 8px; font-size: clamp(29px, 4vw, 42px); line-height: 1.05; letter-spacing: -.03em; }
+    h1 { margin: 0 0 8px; font-size: clamp(42px, 6vw, 52px); line-height: 1.05; letter-spacing: -.03em; color: var(--text-dark); font-weight: 780; }
+    .hero-kicker { font-size: clamp(24px, 3vw, 34px); color: var(--mint); font-weight: 760; letter-spacing: .02em; }
     h2 { margin: 0 0 14px; font-size: 22px; line-height: 1.18; letter-spacing: -.01em; }
     h3 { margin: 0 0 10px; font-size: 16px; color: var(--green); }
     p { margin: 0 0 12px; }
-    .sub { color: var(--muted); max-width: 940px; font-size: 16px; }
+    .sub { color: var(--text-dark-muted); max-width: 940px; font-size: 16px; }
     main { padding: 24px 22px 46px; }
 
     .grid { display: grid; grid-template-columns: 392px 1fr; gap: 18px; align-items: start; }
     .card {
-      background: var(--panel);
-      border: 1px solid var(--line);
+      background: var(--card);
+      border: 1px solid var(--border-light);
       border-radius: 18px;
       box-shadow: var(--shadow);
       padding: 18px;
@@ -79,8 +96,8 @@
     input[type="file"] { padding: 9px; background: #fff; }
     button {
       cursor: pointer;
-      background: var(--green);
-      border-color: var(--green);
+      background: linear-gradient(135deg, var(--shirt-blue), var(--shirt-blue-dark));
+      border-color: var(--shirt-blue-dark);
       color: #fff;
       font-weight: 800;
       margin-top: 14px;
@@ -88,8 +105,8 @@
     }
     button:hover { background: var(--green-2); }
     button:active { transform: translateY(1px); }
-    button.secondary { background: #fff; color: var(--green); }
-    button.secondary:hover { background: var(--green-soft); }
+    button.secondary { background: var(--mint-wash); color: #1d776a; border-color: #b8eee4; }
+    button.secondary:hover { background: #d8f8f0; }
     button.ghost { background: #fff; color: var(--rust); border-color: var(--rust-soft); }
     button.ghost:hover { background: var(--rust-soft); }
 
@@ -98,9 +115,9 @@
     .help { font-size: 12px; color: var(--muted); margin-top: 6px; }
     .privacy {
       margin-top: 10px;
-      background: var(--green-soft);
-      border: 1px solid #cbd9d1;
-      color: var(--green);
+      background: rgba(104,222,200,.12);
+      border: 1px solid rgba(45,186,167,.32);
+      color: #1e786b;
       border-radius: 13px;
       padding: 10px 12px;
       font-size: 12px;
@@ -108,7 +125,7 @@
     }
     .goal-box, .field-box {
       margin-top: 13px;
-      border: 1px solid var(--line);
+      border: 1px solid var(--border-light);
       background: var(--cream);
       border-radius: 14px;
       padding: 12px;
@@ -120,7 +137,7 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      border: 1px solid var(--line);
+      border: 1px solid var(--border-light);
       border-radius: 11px;
       background: #fff;
       padding: 8px 9px;
@@ -142,24 +159,24 @@
     .kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
     .kpis.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     .kpis.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .kpi { background: var(--cream); border: 1px solid var(--line); border-radius: 16px; padding: 14px; }
-    .kpi .label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .055em; margin-bottom: 5px; font-weight: 800; }
+    .kpi { background: var(--cream); border: 1px solid var(--border-light); border-radius: 16px; padding: 14px; }
+    .kpi .label { font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: .055em; margin-bottom: 5px; font-weight: 800; }
     .kpi .value { font-size: 25px; font-weight: 900; color: var(--ink); line-height: 1.12; }
     .kpi .note { font-size: 12px; color: var(--muted); margin-top: 4px; }
     .progress { height: 12px; background: #eee7dd; border-radius: 999px; overflow: hidden; margin: 9px 0 3px; }
-    .bar { height: 100%; background: var(--green); width: 0%; transition: width .2s ease; }
+    .bar { height: 100%; background: linear-gradient(135deg, var(--shirt-blue), var(--shirt-blue-dark)); width: 0%; transition: width .2s ease; }
     .bar.rust { background: var(--rust); }
 
-    .notice { border-radius: 14px; border: 1px solid var(--line); padding: 12px 14px; background: var(--cream); margin-bottom: 12px; }
+    .notice { border-radius: 14px; border: 1px solid var(--border-light); padding: 12px 14px; background: var(--cream); margin-bottom: 12px; }
     .notice.goal { border-color: #cbd9d1; background: var(--green-soft); }
     .notice.warn { border-color: #f0d28a; background: var(--warn-bg); color: var(--warn); }
     .notice.danger { border-color: #efb0a5; background: var(--danger-bg); color: var(--danger); }
     .notice.info { border-color: #cdd7e8; background: var(--blue-soft); color: var(--blue); }
 
-    .table-scroll { overflow-x: auto; border-radius: 14px; border: 1px solid var(--line); }
+    .table-scroll { overflow-x: auto; border-radius: 16px; border: 1px solid var(--border-light); background: #fff; }
     table { border-collapse: collapse; width: 100%; min-width: 760px; background: #fff; }
-    th, td { border-bottom: 1px solid var(--line); padding: 11px 10px; vertical-align: top; text-align: left; }
-    th { background: var(--green-soft); color: var(--ink); font-size: 11px; text-transform: uppercase; letter-spacing: .045em; }
+    th, td { border-bottom: 1px solid var(--border-dark); padding: 11px 10px; vertical-align: top; text-align: left; }
+    th { background: var(--ice); color: var(--ink); font-size: 12px; text-transform: uppercase; letter-spacing: .045em; position: sticky; top: 0; }
     tr:last-child td { border-bottom: 0; }
 
     .pill { display: inline-block; padding: 4px 8px; border-radius: 999px; font-size: 12px; font-weight: 800; margin: 2px 0 6px; white-space: nowrap; }
@@ -170,7 +187,7 @@
     .pill.deload { background: #eeeeee; color: #4d4d4d; }
 
     .profile-list, .baseline-list { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-    .profile, .baseline-item { border: 1px solid var(--line); border-radius: 14px; padding: 11px; background: var(--cream); }
+    .profile, .baseline-item { border: 1px solid var(--border-light); border-radius: 14px; padding: 11px; background: var(--cream); }
     .profile strong, .baseline-item strong { display: block; margin-bottom: 4px; }
     .muted { color: var(--muted); }
     .small { font-size: 12px; }
@@ -178,9 +195,23 @@
     ul.compact { margin: 0; padding-left: 20px; }
     ul.compact li { margin: 5px 0; }
     .split { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-    details { border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; background: var(--cream); }
+    details { border: 1px solid var(--border-light); border-radius: 14px; padding: 12px 14px; background: var(--cream); }
     summary { cursor: pointer; font-weight: 800; color: var(--green); }
     code { background: #eee7dd; padding: 2px 5px; border-radius: 6px; }
+    .visually-hidden { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0,0,0,0); border: 0; }
+    .goal-cards { display: grid; grid-template-columns: 1fr; gap: 8px; margin-top: 8px; }
+    .goal-card {
+      border: 1px solid var(--border-light);
+      background: #fff;
+      border-radius: 12px;
+      padding: 10px 12px;
+      cursor: pointer;
+      transition: border-color .15s ease, box-shadow .15s ease, transform .12s ease;
+    }
+    .goal-card strong { display: block; font-size: 14px; }
+    .goal-card span { color: var(--muted); font-size: 12px; }
+    .goal-card.active { border-color: var(--shirt-blue-dark); box-shadow: 0 0 0 3px rgba(134,168,247,.22); }
+    .goal-card:hover { transform: translateY(-1px); }
 
     @media (max-width: 980px) {
       .grid { grid-template-columns: 1fr; }
@@ -193,14 +224,20 @@
       .row, .row.three { grid-template-columns: 1fr; }
       .kpis, .kpis.three, .kpis.two { grid-template-columns: 1fr; }
       .days-grid { grid-template-columns: 1fr; }
+      table, thead, tbody, th, td, tr { display: block; min-width: 0; }
+      thead { display: none; }
+      tr { border-bottom: 1px solid var(--border-light); padding: 10px; }
+      td { border: 0; padding: 5px 0; }
+      td::before { content: attr(data-label); display: block; font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; margin-bottom: 2px; }
     }
+      :focus-visible { outline: 3px solid var(--info); outline-offset: 2px; }
   </style>
 </head>
 <body>
   <header>
     <div class="wrap">
-      <h1>Peloton Training Recommendation Engine</h1>
-      <p class="sub">Upload your Peloton CSV, set a weekly mile/output goal, choose a fitness outcome, add FTP if you know it, and generate a remaining-week ride plan focused on repeatable progress, recovery, and practical fueling.</p>
+      <h1><span class="hero-kicker">Pace &amp; Power</span><br>Training Engine</h1>
+      <p class="sub">Plan the next ride with mileage, output, FTP, and recovery in balance.</p>
     </div>
   </header>
 
@@ -208,19 +245,21 @@
     <div class="wrap grid">
       <aside class="card sticky">
         <h2>Goal Profile</h2>
-        <label for="csvFile">Peloton workout CSV</label>
+        <label for="csvFile">Upload your Peloton workout CSV</label>
         <input id="csvFile" type="file" accept=".csv,text/csv" />
         <div class="privacy">Your CSV is processed locally in your browser. It is not uploaded or stored anywhere.</div>
+        <div id="uploadMeta" class="help">No file loaded yet.</div>
 
         <div class="goal-box">
           <label for="fitnessGoal">Primary fitness goal</label>
-          <select id="fitnessGoal">
+          <select id="fitnessGoal" class="visually-hidden" aria-label="Primary fitness goal">
             <option value="maintain" selected>Maintain fitness</option>
             <option value="lose">Lose weight / improve body composition</option>
             <option value="power">Gain power / increase FTP</option>
             <option value="endurance">Build endurance</option>
             <option value="deload">Recover / deload week</option>
           </select>
+          <div id="goalCards" class="goal-cards" role="radiogroup" aria-label="Primary fitness goal options"></div>
           <div id="goalHelp" class="help"></div>
         </div>
 
@@ -1283,6 +1322,7 @@ function fmtNum(value, decimals = 0) {
 }
 
 function renderModel(model) {
+  // Dashboard-first composition: progress, plan, coaching, and baseline panels.
   lastModel = model;
   buildExportOutputs(model);
   const sustainability = sustainabilityLabel(model);
@@ -1291,7 +1331,7 @@ function renderModel(model) {
   $('results').className = 'stack';
   $('results').innerHTML = `
     <div class="card">
-      <h2>Weekly summary</h2>
+      <h2>Current week progress</h2>
       ${model.overload.dangers.map(w => `<div class="notice danger"><strong>Action needed:</strong> ${w}</div>`).join('')}
       ${model.overload.warnings.map(w => `<div class="notice warn">${w}</div>`).join('')}
       <div class="notice goal"><strong>${model.goalConfig.label}:</strong> ${model.goalConfig.summary}</div>
@@ -1310,7 +1350,7 @@ function renderModel(model) {
     </div>
 
     <div class="card">
-      <h2>Recommended remaining-week plan</h2>
+      <h2>Recommended plan</h2>
       <div class="table-scroll">
         <table>
           <thead><tr><th>Day</th><th>Ride block</th><th>Minutes</th><th>Miles</th><th>Output</th><th>Intensity</th><th>FTP target</th><th>Reason</th></tr></thead>
@@ -1337,11 +1377,11 @@ function renderModel(model) {
 
     <div class="split">
       <div class="card">
-        <h2>Nutrition and recovery</h2>
+        <h2>Fuel and recover</h2>
         <ul class="compact">${model.nutritionGuidance.map(item => `<li>${item}</li>`).join('')}</ul>
       </div>
       <div class="card">
-        <h2>Adjustment Rules</h2>
+        <h2>Adjustment rules</h2>
         <ul class="compact">${model.adjustmentRules.map(item => `<li>${item}</li>`).join('')}</ul>
       </div>
     </div>
@@ -1370,14 +1410,14 @@ function renderPlanRows(model) {
   return model.plan.map(p => {
     const block = p.rec.parts.map(partText).join(' + ');
     return `<tr>
-      <td><strong>${fmtDate(p.date)}</strong><br><span class="tiny muted">${isoDate(p.date)}</span></td>
-      <td><span class="pill ${p.cls}">${p.role}</span><br>${block}</td>
-      <td><strong>${fmtNum(p.rec.minutes, 0)}</strong><br><span class="tiny muted">Max ${model.maxMinutes}</span></td>
-      <td><strong>${fmtNum(p.rec.miles, 1)}</strong><br><span class="tiny muted">target ${fmtNum(p.targetMiles, 1)}</span></td>
-      <td><strong>${fmtNum(p.rec.output, 0)}</strong><br><span class="tiny muted">target ${fmtNum(p.targetOutput, 0)}</span></td>
-      <td><span class="pill ${p.rec.intensityCls}">${p.rec.intensityLabel}</span><br><span class="tiny muted">${p.rec.hard ? 'Hard ride' : 'Easy/moderate'}</span></td>
-      <td>${ftpTargetCell(p.rec.intensityLabel, model.ftp, p.rec)}</td>
-      <td class="small">${p.reason}</td>
+      <td data-label="Day"><strong>${fmtDate(p.date)}</strong><br><span class="tiny muted">${isoDate(p.date)}</span></td>
+      <td data-label="Ride block"><span class="pill ${p.cls}">${p.role}</span><br>${block}</td>
+      <td data-label="Minutes"><strong>${fmtNum(p.rec.minutes, 0)}</strong><br><span class="tiny muted">Max ${model.maxMinutes}</span></td>
+      <td data-label="Miles"><strong>${fmtNum(p.rec.miles, 1)}</strong><br><span class="tiny muted">target ${fmtNum(p.targetMiles, 1)}</span></td>
+      <td data-label="Output"><strong>${fmtNum(p.rec.output, 0)}</strong><br><span class="tiny muted">target ${fmtNum(p.targetOutput, 0)}</span></td>
+      <td data-label="Intensity"><span class="pill ${p.rec.intensityCls}">${p.rec.intensityLabel}</span><br><span class="tiny muted">${p.rec.hard ? 'Hard ride' : 'Easy/moderate'}</span></td>
+      <td data-label="FTP target">${ftpTargetCell(p.rec.intensityLabel, model.ftp, p.rec)}</td>
+      <td data-label="Reason" class="small">${p.reason}</td>
     </tr>`;
   }).join('');
 }
@@ -1524,18 +1564,36 @@ function updateGoalHelp() {
   $('goalHelp').textContent = goal.summary;
 }
 
+function initGoalCards() {
+  const holder = $('goalCards');
+  holder.innerHTML = Object.entries(GOALS).map(([key, goal]) => `
+    <button type="button" class="goal-card ${$('fitnessGoal').value === key ? 'active' : ''}" data-goal="${key}" role="radio" aria-checked="${$('fitnessGoal').value === key}">
+      <strong>${goal.label}</strong>
+      <span>${goal.summary}</span>
+    </button>
+  `).join('');
+  holder.querySelectorAll('.goal-card').forEach(card => {
+    card.addEventListener('click', () => {
+      $('fitnessGoal').value = card.dataset.goal;
+      updateGoalHelp();
+      initGoalCards();
+      handleBuild();
+    });
+  });
+}
+
 function handleBuild() {
   saveSettings();
   updateGoalHelp();
   if (!parsedRows.length) {
     $('results').className = 'empty';
-    $('results').innerHTML = '<h2>Upload your Peloton CSV to start</h2><p>The app will identify your current week progress, calculate your recent baseline, and recommend ride blocks for the rest of the week.</p>';
+    $('results').innerHTML = '<h2>Start with your workout history</h2><p>Upload your Peloton CSV to calculate current-week progress, recent baseline, and a sustainable ride plan.</p>';
     return;
   }
   const cleaned = cleanRows(parsedRows);
   if (!cleaned.rides.length) {
     $('results').className = 'empty';
-    $('results').innerHTML = '<h2>No cycling workouts found</h2><p>The CSV was read, but no cycling workouts with distance were found. Check that the export includes distance and fitness discipline fields.</p>';
+    $('results').innerHTML = '<h2>We found workouts, but not a usable distance column</h2><p>Mileage-based recommendations may be limited. Check that your export includes Distance and Fitness Discipline columns.</p>';
     return;
   }
   try {
@@ -1579,8 +1637,10 @@ function setupEvents() {
   $('csvFile').addEventListener('change', async (event) => {
     const file = event.target.files[0];
     if (!file) return;
+    $('uploadMeta').textContent = `Loaded: ${file.name}`;
     const text = await file.text();
     parsedRows = parseCsv(text);
+    $('uploadMeta').textContent = `Loaded: ${file.name} · ${parsedRows.length} workouts found`; 
     if (!$('outputGoal').value) $('outputGoal').dataset.auto = 'true';
     handleBuild();
   });
@@ -1588,6 +1648,7 @@ function setupEvents() {
   ['fitnessGoal','mileGoal','outputGoal','ftpWatts','targetFtpWatts','preferredRestDay','planMode','weekStart','maxRideMinutes','intensityBias'].forEach(id => {
     $(id).addEventListener('change', () => {
       if (id === 'fitnessGoal' && $('outputGoal').dataset.auto === 'true') $('outputGoal').value = '';
+      if (id === 'fitnessGoal') initGoalCards();
       handleBuild();
     });
   });
@@ -1610,6 +1671,7 @@ function setupEvents() {
 initDaysAvailable();
 loadSettings();
 updateGoalHelp();
+initGoalCards();
 setupEvents();
 </script>
 </body>
