@@ -145,6 +145,25 @@ function mostCommon(values) {
   return [...counts.entries()].sort((a,b) => b[1] - a[1])[0]?.[0] || '';
 }
 
+function classifyRideFamily(ride) {
+  const text = `${ride.type || ''} ${ride.title || ''}`.toLowerCase();
+  if (/power zone max/.test(text)) return 'Power Zone Max';
+  if (/power zone endurance/.test(text)) return 'Power Zone Endurance';
+  if (/power zone/.test(text)) return 'Power Zone';
+  if (/tabata/.test(text)) return 'Tabata';
+  if (/hiit/.test(text)) return 'HIIT';
+  if (/interval/.test(text)) return 'Intervals';
+  if (/climb/.test(text)) return 'Climb';
+  if (/low impact/.test(text)) return 'Low Impact';
+  if (/recovery/.test(text)) return 'Recovery';
+  if (/warm.?up/.test(text)) return 'Warm Up';
+  if (/cool.?down/.test(text)) return 'Cool Down';
+  if (/scenic/.test(text)) return 'Scenic';
+  if (/pro cyclist/.test(text)) return 'Pro Cyclist';
+  if (/add.?on/.test(text)) return 'Add-on';
+  return ride.type || 'Cycling';
+}
+
 function buildRideProfiles(rides, referenceDate) {
   const cut = addDays(referenceDate, -180);
   const recent = rides.filter(r => r.date >= cut && r.distance > 0 && r.minutes > 0 && r.output > 0);
