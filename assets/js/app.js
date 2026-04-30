@@ -158,6 +158,22 @@ function updateGoalHelp() {
   $('goalHelp').textContent = goal.summary;
 }
 
+function initDaysAvailable() {
+  const container = $('daysAvailable');
+  container.innerHTML = DAY_NAMES.map((name, i) => `
+    <label class="day-check">
+      <input type="checkbox" data-day="${i}" checked />
+      ${name}
+    </label>
+  `).join('');
+  container.querySelectorAll('input[type="checkbox"]').forEach(c => {
+    c.addEventListener('change', () => {
+      saveSettings();
+      if (hasBuiltPlan) handleBuild();
+    });
+  });
+}
+
 function initGoalCards() {
   const holder = $('goalCards');
   holder.innerHTML = Object.entries(GOALS).map(([key, goal]) => `
@@ -250,10 +266,6 @@ function setupEvents() {
     });
   });
   $('outputGoal').addEventListener('input', () => { $('outputGoal').dataset.auto = $('outputGoal').value ? 'false' : 'true'; });
-  document.querySelectorAll('#daysAvailable input[type="checkbox"]').forEach(c => c.addEventListener('change', () => {
-    saveSettings();
-    if (hasBuiltPlan) handleBuild();
-  }));
   $('buildBtn').addEventListener('click', handleBuild);
   $('copyBtn').addEventListener('click', async () => {
     if (!lastPlanText && parsedRows.length) handleBuild();
@@ -272,3 +284,4 @@ initDaysAvailable();
 loadSettings();
 updateGoalHelp();
 initGoalCards();
+setupEvents();

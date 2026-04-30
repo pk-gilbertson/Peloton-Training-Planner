@@ -1,3 +1,22 @@
+const FALLBACK_BLOCKS = [
+  { family: 'Add-on',               minutes: 15, intensityLabel: 'Recovery',            intensityCls: 'recovery', hard: false, rateMult: .70, outputMult: .58 },
+  { family: 'Recovery',             minutes: 20, intensityLabel: 'Recovery',            intensityCls: 'recovery', hard: false, rateMult: .74, outputMult: .62 },
+  { family: 'Low Impact',           minutes: 20, intensityLabel: 'Easy endurance',      intensityCls: 'easy',     hard: false, rateMult: .80, outputMult: .70 },
+  { family: 'Cycling',              minutes: 30, intensityLabel: 'Easy endurance',      intensityCls: 'easy',     hard: false, rateMult: .88, outputMult: .80 },
+  { family: 'Low Impact',           minutes: 30, intensityLabel: 'Easy endurance',      intensityCls: 'easy',     hard: false, rateMult: .86, outputMult: .78 },
+  { family: 'Power Zone Endurance', minutes: 30, intensityLabel: 'Easy endurance',      intensityCls: 'easy',     hard: false, rateMult: .87, outputMult: .79 },
+  { family: 'Cycling',              minutes: 45, intensityLabel: 'Easy endurance',      intensityCls: 'easy',     hard: false, rateMult: .92, outputMult: .84 },
+  { family: 'Power Zone Endurance', minutes: 45, intensityLabel: 'Easy endurance',      intensityCls: 'easy',     hard: false, rateMult: .91, outputMult: .83 },
+  { family: 'Power Zone',           minutes: 45, intensityLabel: 'Moderate endurance',  intensityCls: 'moderate', hard: false, rateMult: .90, outputMult: .96 },
+  { family: 'Climb',                minutes: 45, intensityLabel: 'Tempo / challenging', intensityCls: 'moderate', hard: true,  rateMult: .86, outputMult: 1.06 },
+  { family: 'Cycling',              minutes: 60, intensityLabel: 'Easy endurance',      intensityCls: 'easy',     hard: false, rateMult: .94, outputMult: .86 },
+  { family: 'Power Zone Endurance', minutes: 60, intensityLabel: 'Easy endurance',      intensityCls: 'easy',     hard: false, rateMult: .93, outputMult: .85 },
+  { family: 'Power Zone',           minutes: 60, intensityLabel: 'Moderate endurance',  intensityCls: 'moderate', hard: false, rateMult: .91, outputMult: .97 },
+  { family: 'Power Zone Endurance', minutes: 75, intensityLabel: 'Easy endurance',      intensityCls: 'easy',     hard: false, rateMult: .95, outputMult: .87 },
+  { family: 'Cycling',              minutes: 90, intensityLabel: 'Easy endurance',      intensityCls: 'easy',     hard: false, rateMult: .96, outputMult: .88 },
+  { family: 'Power Zone Endurance', minutes: 90, intensityLabel: 'Easy endurance',      intensityCls: 'easy',     hard: false, rateMult: .95, outputMult: .87 },
+];
+
 function estimateFallbackProfile(block, baseline, ftp) {
   const mpm = baseline.avgMilesPerMinute || .30;
   const opm = baseline.avgOutputPerMinute || 9.5;
@@ -34,23 +53,6 @@ function ensureProfileOptions(profiles, baseline, ftp) {
     if (!exists) all.push(estimateFallbackProfile(block, baseline, ftp));
   }
   return all;
-}
-
-function intensityTargetRange(label) {
-  if (label === 'Recovery') return { low: .45, high: .55, text: '<55% FTP' };
-  if (label === 'Easy endurance') return { low: .55, high: .70, text: '55–70% FTP' };
-  if (label === 'Moderate endurance') return { low: .70, high: .80, text: '70–80% FTP' };
-  if (label === 'Tempo / challenging') return { low: .80, high: .90, text: '80–90% FTP' };
-  if (label === 'Hard / high-intensity') return { low: .90, high: 1.02, text: '90–102% FTP' };
-  return { low: .55, high: .75, text: '55–75% FTP' };
-}
-
-function ftpTargetText(label, ftp) {
-  const range = intensityTargetRange(label);
-  if (!ftp) return range.text;
-  const low = Math.round(range.low * ftp);
-  const high = Math.round(range.high * ftp);
-  return `${range.text} (${low}–${high}w)`;
 }
 
 function includesAny(text, terms) {
