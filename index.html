@@ -206,8 +206,7 @@
     ul.compact li { margin: 5px 0; }
     .split { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
     details { border: 1px solid var(--border-light); border-radius: 14px; padding: 12px 14px; background: var(--cream); }
-    summary { cursor: pointer; font-weight: 800; color: #20324f; font-size: 14px; }
-    details.field-box > summary { margin-bottom: 10px; }
+    summary { cursor: pointer; font-weight: 800; color: var(--green); }
     code { background: #eee7dd; padding: 2px 5px; border-radius: 6px; }
     .visually-hidden { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0,0,0,0); border: 0; }
     .goal-cards { display: grid; grid-template-columns: 1fr; gap: 8px; margin-top: 8px; }
@@ -220,7 +219,7 @@
       transition: border-color .15s ease, box-shadow .15s ease, transform .12s ease;
     }
     .goal-card strong { display: block; font-size: 14px; }
-    .goal-card span { color: #3f4f66; font-size: 13px; font-weight: 600; line-height: 1.45; }
+    .goal-card span { color: var(--muted); font-size: 12px; }
     .goal-card.active { border-color: var(--shirt-blue-dark); box-shadow: 0 0 0 3px rgba(134,168,247,.22); }
     .goal-card:hover { transform: translateY(-1px); }
 
@@ -235,7 +234,6 @@
       .row, .row.three { grid-template-columns: 1fr; }
       .kpis, .kpis.three, .kpis.two { grid-template-columns: 1fr; }
       .days-grid { grid-template-columns: 1fr; }
-      .sticky { padding-right: 8px; }
       table, thead, tbody, th, td, tr { display: block; min-width: 0; }
       thead { display: none; }
       tr { border-bottom: 1px solid var(--border-light); padding: 10px; }
@@ -262,19 +260,23 @@
         <div class="privacy">Your CSV is processed locally in your browser. It is not uploaded or stored anywhere.</div>
         <div id="uploadMeta" class="help">No file loaded yet.</div>
 
-        <details open class="field-box">
-          <summary>Goal and weekly targets</summary>
-          <div class="goal-box">
-            <label for="fitnessGoal">Primary fitness goal</label>
-            <select id="fitnessGoal" class="visually-hidden" aria-label="Primary fitness goal">
-              <option value="maintain" selected>Maintain fitness</option>
-              <option value="lose">Lose weight / improve body composition</option>
-              <option value="power">Gain power / increase FTP</option>
-              <option value="endurance">Build endurance</option>
-              <option value="deload">Recover / deload week</option>
-            </select>
-            <div id="goalCards" class="goal-cards" role="radiogroup" aria-label="Primary fitness goal options"></div>
-            <div id="goalHelp" class="help"></div>
+        <div class="goal-box">
+          <label for="fitnessGoal">Primary fitness goal</label>
+          <select id="fitnessGoal" class="visually-hidden" aria-label="Primary fitness goal">
+            <option value="maintain" selected>Maintain fitness</option>
+            <option value="lose">Lose weight / improve body composition</option>
+            <option value="power">Gain power / increase FTP</option>
+            <option value="endurance">Build endurance</option>
+            <option value="deload">Recover / deload week</option>
+          </select>
+          <div id="goalCards" class="goal-cards" role="radiogroup" aria-label="Primary fitness goal options"></div>
+          <div id="goalHelp" class="help"></div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label for="mileGoal">Weekly mile goal</label>
+            <input id="mileGoal" type="number" min="1" step="1" value="100" />
           </div>
 
           <div class="row">
@@ -1670,9 +1672,7 @@ function setupEvents() {
     $(id).addEventListener('change', () => {
       if (id === 'fitnessGoal' && $('outputGoal').dataset.auto === 'true') $('outputGoal').value = '';
       if (id === 'fitnessGoal') initGoalCards();
-      saveSettings();
-      updateGoalHelp();
-      if (hasBuiltPlan) handleBuild();
+      handleBuild();
     });
   });
   $('outputGoal').addEventListener('input', () => { $('outputGoal').dataset.auto = $('outputGoal').value ? 'false' : 'true'; });
